@@ -1,4 +1,4 @@
-#Functionalities
+# Functionalities
 
 - List students
 
@@ -14,7 +14,7 @@
 
 - Link the invoice to sessions
 
-#How to use
+# How to use
 
 The software is meant to be used on the local computer and exposes an HTTP enpoint on port 8080.
 
