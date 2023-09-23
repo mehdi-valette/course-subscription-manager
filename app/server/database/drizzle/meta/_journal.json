@@ -1,0 +1,13 @@
+{
+  "version": "5",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1695450547789,
+      "tag": "0000_condemned_sphinx",
+      "breakpoints": true
+    }
+  ]
+}
