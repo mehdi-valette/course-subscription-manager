@@ -3,18 +3,46 @@
     <table class="table">
       <thead>
         <tr>
-          <th>First name</th>
-          <th>Last name</th>
-          <th>E-mail</th>
-          <th>Phone number</th>
+          <th class="w-48">First name</th>
+          <th class="w-48">Last name</th>
+          <th class="w-48">E-mail</th>
+          <th class="w-48">Phone number</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="student in studentList" :key="student.id">
-          <td>{{ student.firstname }}</td>
-          <td>{{ student.lastname }}</td>
-          <td>{{ student.email }}</td>
-          <td>{{ student.phone }}</td>
+          <td>
+            <DataCell
+              :data="student.firstname"
+              @change="
+                (value) => updateStudent({ id: student.id, firstname: value })
+              "
+            />
+          </td>
+          <td>
+            <DataCell
+              :data="student.lastname"
+              @change="
+                (value) => updateStudent({ id: student.id, lastname: value })
+              "
+            />
+          </td>
+          <td>
+            <DataCell
+              :data="student.email"
+              @change="
+                (value) => updateStudent({ id: student.id, email: value })
+              "
+            />
+          </td>
+          <td>
+            <DataCell
+              :data="student.phone"
+              @change="
+                (value) => updateStudent({ id: student.id, phone: value })
+              "
+            />
+          </td>
         </tr>
       </tbody>
     </table>
@@ -22,5 +50,13 @@
 </template>
 
 <script lang="ts" setup>
-const { data: studentList } = await useFetch("/api/students");
+const { data: studentList, refresh } = await useFetch("/api/student");
+
+async function updateStudent(body: {
+  id: number;
+  [key: string]: string | number;
+}) {
+  await $fetch(`/api/student/${body.id}`, { method: "PATCH", body });
+  await refresh();
+}
 </script>
