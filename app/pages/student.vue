@@ -1,6 +1,8 @@
 <template>
   <div>
-    <button class="btn" @click="handleAddUserModal">click here</button>
+    <button class="btn" @click="() => (openAddUserModal = !openAddUserModal)">
+      click here
+    </button>
     <table class="table">
       <thead>
         <tr>
@@ -16,7 +18,7 @@
           <td>
             <button
               class="btn btn-sm btn-warning"
-              @click="() => deleteStudent(student.id)"
+              @click="() => deleteStudentConfirm(student)"
             >
               <img src="~/assets/icons/delete.svg" alt="delete" />
             </button>
@@ -56,13 +58,28 @@
         </tr>
       </tbody>
     </table>
-    <ModalAddStudent :open="openAddUserModal" />
+    <ModalStudentAdd :open="openAddUserModal" />
+    <ModalStudentDelete
+      :full-name="studentToBeDeleted.fullName"
+      :short-name="studentToBeDeleted.shortName"
+      :open="studentToBeDeleted.open"
+      :callback="studentToBeDeleted.callback"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
 const { data: studentList, refresh } = await useFetch("/api/student");
+
+type Student = Exclude<typeof studentList.value, null>[0];
+
 const openAddUserModal = ref(false);
+const studentToBeDeleted = reactive({
+  shortName: "",
+  fullName: "",
+  callback: async () => {},
+  open: false,
+});
 
 async function updateStudent(body: {
   id: number;
@@ -72,12 +89,13 @@ async function updateStudent(body: {
   await refresh();
 }
 
-async function deleteStudent(id: number) {
-  await $fetch(`api/student/${id}`, { method: "DELETE" });
-  await refresh();
-}
-
-function handleAddUserModal() {
-  openAddUserModal.value = !openAddUserModal.value;
+async function deleteStudentConfirm(student: Student): Promise<void> {
+  studentToBeDeleted.fullName = `${student.firstname} ${student.lastname}`;
+  studentToBeDeleted.shortName = student.firstname;
+  studentToBeDeleted.callback = async () => {
+    await $fetch(`api/student/${student.id}`, { method: "DELETE" });
+    await refresh();
+  };
+  studentToBeDeleted.open = !studentToBeDeleted.open;
 }
 </script>
