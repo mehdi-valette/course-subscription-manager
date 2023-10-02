@@ -69,9 +69,9 @@
 </template>
 
 <script lang="ts" setup>
-const { data: studentList, refresh } = await useFetch("/api/student");
-
-type Student = Exclude<typeof studentList.value, null>[0];
+const studentStore = useStudentStore();
+await studentStore.initialFetch();
+const studentList = studentStore.studentList;
 
 const openAddUserModal = ref(false);
 const studentToBeDeleted = reactive({
@@ -81,20 +81,15 @@ const studentToBeDeleted = reactive({
   open: false,
 });
 
-async function updateStudent(body: {
-  id: number;
-  [key: string]: string | number;
-}) {
-  await $fetch(`/api/student/${body.id}`, { method: "patch", body });
-  await refresh();
+async function updateStudent(student: Partial<Student> & Pick<Student, "id">) {
+  await studentStore.updateStudent(student);
 }
 
-async function deleteStudentConfirm(student: Student): Promise<void> {
+async function deleteStudentConfirm(student: any): Promise<void> {
   studentToBeDeleted.fullName = `${student.firstname} ${student.lastname}`;
   studentToBeDeleted.shortName = student.firstname;
   studentToBeDeleted.callback = async () => {
-    await $fetch(`api/student/${student.id}`, { method: "DELETE" });
-    await refresh();
+    await studentStore.deleteStudent(student.id);
   };
   studentToBeDeleted.open = !studentToBeDeleted.open;
 }

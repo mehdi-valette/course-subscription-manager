@@ -12,6 +12,7 @@
   "devDependencies": {
     "@nuxt/devtools": "latest",
     "@nuxtjs/tailwindcss": "^6.2.0",
+    "@pinia/nuxt": "^0.4.11",
     "@types/better-sqlite3": "^7.6.5",
     "better-sqlite3": "^8.6.0",
     "clsx": "^2.0.0",
@@ -21,6 +22,7 @@
     "drizzle-zod": "^0.5.1",
     "nanoid": "^5.0.1",
     "nuxt": "^3.7.3",
-    "nuxt-icons": "^3.2.1"
+    "nuxt-icons": "^3.2.1",
+    "pinia": "^2.1.6"
   }
 }

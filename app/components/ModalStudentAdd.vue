@@ -2,12 +2,7 @@
   <Modal :open="props.open">
     <template v-slot="modal">
       <form
-        @submit.prevent="
-          () => {
-            handleAddStudent();
-            modal.close();
-          }
-        "
+        @submit.prevent="() => handleAddStudent(modal.close)"
         class="form-control w-full max-w-xs"
       >
         <label class="label" :for="ids.firstname">
@@ -59,6 +54,8 @@
 <script lang="ts" setup>
 import { nanoid } from "nanoid/non-secure";
 
+const studentStore = useStudentStore();
+
 const props = defineProps<{
   open: boolean;
 }>();
@@ -77,12 +74,12 @@ const newStudent = reactive({
   phone: "",
 });
 
-async function handleAddStudent() {
-  console.log("sending", newStudent);
-  const result = await $fetch(`/api/student`, {
-    method: "post",
-    body: newStudent,
-  });
-  console.log(result);
+async function handleAddStudent(close: () => void) {
+  await studentStore.addStudent(structuredClone(toRaw(newStudent)));
+  newStudent.firstname = "";
+  newStudent.lastname = "";
+  newStudent.email = "";
+  newStudent.phone = "";
+  close();
 }
 </script>
