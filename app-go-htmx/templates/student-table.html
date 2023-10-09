@@ -1,0 +1,98 @@
+<table>
+    <thead>
+        <tr>
+            <th style="width: 10rem;">First name</th>
+            <th style="width: 10rem;">Last name</th>
+            <th style="width: 10rem;">Email address</th>
+            <th style="width: 10rem;">Phone number</th>
+            <th style="width: 3rem;"></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><input form="student-form-add" name="firstname" style="width: 100%;" autofocus form="student-table-form"
+                    hx-trigger="" />
+            </td>
+            <td><input form="student-form-add" name="lastname" style="width: 100%;" form="student-table-form"
+                    hx-trigger="" /></td>
+            <td><input form="student-form-add" name="email" style="width: 100%;" form="student-table-form"
+                    hx-trigger="" /></td>
+            <td><input form="student-form-add" name="phone" style="width: 100%;" form="student-table-form"
+                    hx-trigger="" /></td>
+            <td>
+                <form hx-post="/student" id="student-form-add" hx-target="closest tr" hx-swap="afterend">
+                    <button type="submit">Save</button>
+                </form>
+            </td>
+        </tr>
+        {{ range $student := . }}
+        {{ block "inline-student" .}}
+        <tr>
+            <td>{{ .Firstname }}</td>
+            <td>{{ .Lastname }}</td>
+            <td>{{ .Email }}</td>
+            <td>{{ .Phone }}</td>
+            <td>
+                <button hx-get="/student/inline-form" hx-vals='{"id": "{{ .Id }}"}' hx-target="closest tr"
+                    hx-swap="outerHTML">
+                    Edit
+                </button>
+            </td>
+        </tr>
+        {{ end }}
+        {{ end }}
+
+        {{ define "inline-form" }}
+        <tr>
+            <td><input form="student-form-{{ .Id }}" name="firstname" style="width: 100%;" autofocus
+                    form="student-table-form" hx-trigger="" value="{{ .Firstname }}" />
+            </td>
+            <td><input form="student-form-{{ .Id }}" name="lastname" style="width: 100%;" form="student-table-form"
+                    hx-trigger="" value="{{ .Lastname }}" /></td>
+            <td><input form="student-form-{{ .Id }}" name="email" style="width: 100%;" form="student-table-form"
+                    hx-trigger="" value="{{ .Email }}" /></td>
+            <td><input form="student-form-{{ .Id }}" name="phone" style="width: 100%;" form="student-table-form"
+                    hx-trigger="" value="{{ .Phone }}" /></td>
+            <td>
+                <form hx-put="/student" id="student-form-{{ .Id }}" hx-target="closest tr" hx-swap="outerHTML">
+                    <input type="hidden" name="id" value="{{.Id}}" />
+                    <button type="submit">Save</button>
+                </form>
+            </td>
+        </tr>
+        {{ end }}
+
+        {{ define "inline-new-student"}}
+        <tr>
+            <td style="background-color: lightGreen">{{ .Firstname }}</td>
+            <td style="background-color: lightGreen">{{ .Lastname }}</td>
+            <td style="background-color: lightGreen">{{ .Email }}</td>
+            <td style="background-color: lightGreen">{{ .Phone }}</td>
+            <td style="background-color: lightGreen">
+                <button hx-get="/student/inline-form" hx-vals='{"id": "{{ .Id }}"}' hx-target="closest tr"
+                    hx-swap="outerHTML">
+                    Edit
+                </button>
+            </td>
+        </tr>
+        {{ end }}
+    </tbody>
+
+    {{ define "student-delete-confirm" }}
+    <dialog
+        style="background-color: lightskyblue; border-radius: .5rem; border: 1px solid black; box-shadow: .3rem .3rem 1rem 1rem rgba(0, 0, 150, 0.2)"
+        open>
+        <h1>Delete name</h1>
+
+        <p>Are you sure you want to delete name?</p>
+
+        <div style="display: flex; justify-content: end; gap: 1rem;">
+            <form hx-delete="/student/45">
+                <input type="hidden" name="id" value="45" />
+                <button type="button" _="on click remove the closest <dialog/>">Cancel</button>
+                <button type="submit">Delete name</button>
+            </form>
+        </div>
+    </dialog>
+    {{ end }}
+</table>

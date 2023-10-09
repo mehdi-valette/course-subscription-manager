@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Go To-Do list</title>
+    <style>
+        body {
+            display: flex;
+            margin: 0;
+        }
+
+        .menu {
+            background-color: lightskyblue;
+            height: 100vh;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 1rem;
+        }
+
+        .menu li {
+            list-style: none;
+        }
+
+        table {
+            text-align: left;
+            border-collapse: collapse;
+        }
+
+        table th {
+            background-color: lightSkyBlue;
+            padding: 1rem;
+        }
+
+        table th:first-child {
+            border-radius: 1rem 0 0 0;
+        }
+
+        table th:last-child {
+            border-radius: 0 1rem 0 0;
+        }
+
+        table td {
+            border-top: .5px solid gray;
+            padding: 1rem;
+        }
+
+        .page-container {
+            padding: 2rem;
+            box-sizing: border-box;
+            overflow: auto;
+            height: 100vh;
+        }
+    </style>
+</head>
+
+<body>
+    <ul class="menu">
+        <li><button class="btn" hx-get="/student" hx-target="#page">Students</button></li>
+        <li>Sessions</li>
+    </ul>
+    <div class="page-container">
+        <div id="page"></div>
+    </div>
+</body>
+
+<script src="https://unpkg.com/htmx.org@1.9.6"
+    integrity="sha384-FhXw7b6AlE/jyjlZH5iHa/tTe9EpJ1Y55RjcgPbjeWMskSxZt1v9qkxLJWNJaGni"
+    crossorigin="anonymous"></script>
+
+<script src="https://unpkg.com/hyperscript.org@0.9.11"></script>
+
+</html>
