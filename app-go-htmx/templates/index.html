@@ -53,7 +53,7 @@
     </style>
 </head>
 
-<body>
+<body hx-ext="response-targets">
     <ul class="menu">
         <li><button class="btn" hx-get="/student" hx-target="#page">Students</button></li>
         <li>Sessions</li>
@@ -61,11 +61,14 @@
     <div class="page-container">
         <div id="page"></div>
     </div>
+
+    <div id="dialog"></template>
 </body>
 
 <script src="https://unpkg.com/htmx.org@1.9.6"
     integrity="sha384-FhXw7b6AlE/jyjlZH5iHa/tTe9EpJ1Y55RjcgPbjeWMskSxZt1v9qkxLJWNJaGni"
     crossorigin="anonymous"></script>
+<script src="https://unpkg.com/htmx.org/dist/ext/response-targets.js"></script>
 
 <script src="https://unpkg.com/hyperscript.org@0.9.11"></script>
 

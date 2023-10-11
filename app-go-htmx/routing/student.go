@@ -4,27 +4,11 @@ import (
 	"app-htmx/repository"
 	"fmt"
 	"html/template"
+	"io"
 	"net/http"
 	"strconv"
 	"strings"
 )
-
-var students = []repository.Student{
-	{
-		Id:        1,
-		Firstname: "Rachel",
-		Lastname:  "Green",
-		Email:     "rachel@green.net",
-		Phone:     "000 343 43 34",
-	},
-	{
-		Id:        2,
-		Firstname: "Phoebe",
-		Lastname:  "Buffay",
-		Email:     "phoebe@buffay.net",
-		Phone:     "342 423 49 80",
-	},
-}
 
 func student(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path == "/student/inline-form" {
@@ -32,7 +16,7 @@ func student(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if r.URL.Path[0:17] == "/student/confirm/" {
+	if len(r.URL.Path) > 17 && r.URL.Path[0:17] == "/student/confirm/" {
 		getDeleteStudentConfirm(w, r)
 		return
 	}
@@ -44,6 +28,8 @@ func student(w http.ResponseWriter, r *http.Request) {
 		updateStudent(w, r)
 	case "POST":
 		addStudent(w, r)
+	case "DELETE":
+		deleteStudent(w, r)
 	}
 }
 
@@ -95,7 +81,7 @@ func updateStudent(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 	}
 
-	id64, err := strconv.ParseUint(r.FormValue("Id"), 10, 32)
+	id64, err := strconv.ParseUint(r.FormValue("id"), 10, 32)
 
 	if err != nil {
 		fmt.Println(err)
@@ -171,5 +157,22 @@ func getDeleteStudentConfirm(w http.ResponseWriter, r *http.Request) {
 }
 
 func deleteStudent(w http.ResponseWriter, r *http.Request) {
+	idRaw := strings.TrimSuffix(r.URL.Path[9:], "/")
 
+	id64, err := strconv.ParseUint(idRaw, 10, 32)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	id := uint32(id64)
+	student := repository.Student{Id: id}
+
+	err = repository.DeleteStudent(&student)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	io.WriteString(w, "")
 }

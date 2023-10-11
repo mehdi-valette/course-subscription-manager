@@ -27,7 +27,7 @@
         </tr>
         {{ range $student := . }}
         {{ block "inline-student" .}}
-        <tr>
+        <tr id="inline-student-{{ .Id }}">
             <td>{{ .Firstname }}</td>
             <td>{{ .Lastname }}</td>
             <td>{{ .Email }}</td>
@@ -37,6 +37,7 @@
                     hx-swap="outerHTML">
                     Edit
                 </button>
+                <button hx-get="/student/confirm/{{ .Id }}" hx-target="#dialog" hx-swap="beforeend">Delete</button>
             </td>
         </tr>
         {{ end }}
@@ -82,16 +83,13 @@
     <dialog
         style="background-color: lightskyblue; border-radius: .5rem; border: 1px solid black; box-shadow: .3rem .3rem 1rem 1rem rgba(0, 0, 150, 0.2)"
         open>
-        <h1>Delete name</h1>
-
-        <p>Are you sure you want to delete name?</p>
+        <p>Are you sure you want to delete <strong>{{ .Firstname }} {{ .Lastname }}</strong>?</p>
 
         <div style="display: flex; justify-content: end; gap: 1rem;">
-            <form hx-delete="/student/45">
-                <input type="hidden" name="id" value="45" />
-                <button type="button" _="on click remove the closest <dialog/>">Cancel</button>
-                <button type="submit">Delete name</button>
-            </form>
+            <button autofocus type="button" _="on click remove the closest <dialog/>">Cancel</button>
+            <button hx-delete="/student/{{ .Id }}" _="on click remove the closest <dialog/>"
+                hx-target="#inline-student-{{ .Id }}" hx-swap="outerHTML">Delete {{
+                .Firstname }}</button>
         </div>
     </dialog>
     {{ end }}
