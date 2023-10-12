@@ -6,12 +6,11 @@ import (
 	"html/template"
 	"io"
 	"net/http"
-	"strconv"
 	"strings"
 )
 
 func student(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path == "/student/inline-form" {
+	if strings.HasPrefix(r.URL.Path, "/student/inline-form") {
 		getStudentInlineForm(w, r)
 		return
 	}
@@ -34,6 +33,15 @@ func student(w http.ResponseWriter, r *http.Request) {
 }
 
 func getStudent(w http.ResponseWriter, r *http.Request) {
+	if len(r.URL.Path) > len("/student/") {
+		getStudentSingle(w, r)
+		return
+	}
+
+	getStudentList(w, r)
+}
+
+func getStudentList(w http.ResponseWriter, r *http.Request) {
 	tmp, err := template.ParseFiles("../templates/student-table.html")
 
 	if err != nil {
@@ -50,14 +58,33 @@ func getStudent(w http.ResponseWriter, r *http.Request) {
 	tmp.Execute(w, studentList)
 }
 
+func getStudentSingle(w http.ResponseWriter, r *http.Request) {
+	id, err := extractIdFromPath(r.URL.Path, "/student/")
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	tmp, err := template.ParseFiles("../templates/student-table.html")
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	student := repository.Student{Id: id}
+	err = repository.GetStudent(&student)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	tmp.ExecuteTemplate(w, "inline-student", student)
+}
+
 func getStudentInlineForm(w http.ResponseWriter, r *http.Request) {
-	studentIdStr := r.URL.Query().Get("id")
+	id, err := extractIdFromPath(r.URL.Path, "/student/inline-form/")
 
-	studentId64, err := strconv.ParseUint(studentIdStr, 10, 32)
-
-	studentId := uint32(studentId64)
-	var student repository.Student
-	student.Id = studentId
+	student := repository.Student{Id: id}
 
 	err = repository.GetStudent(&student)
 
@@ -75,19 +102,17 @@ func getStudentInlineForm(w http.ResponseWriter, r *http.Request) {
 }
 
 func updateStudent(w http.ResponseWriter, r *http.Request) {
+	id, err := extractIdFromPath(r.URL.Path, "/student/")
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
 	tmp, err := template.ParseFiles("../templates/student-table.html")
 
 	if err != nil {
 		fmt.Println(err)
 	}
-
-	id64, err := strconv.ParseUint(r.FormValue("id"), 10, 32)
-
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	id := uint32(id64)
 
 	student := repository.Student{
 		Id:        id,
@@ -130,15 +155,12 @@ func addStudent(w http.ResponseWriter, r *http.Request) {
 }
 
 func getDeleteStudentConfirm(w http.ResponseWriter, r *http.Request) {
-	idRaw := strings.TrimSuffix(r.URL.Path[17:], "/")
-
-	id64, err := strconv.ParseUint(idRaw, 10, 32)
+	id, err := extractIdFromPath(r.URL.Path, "/student/confirm/")
 
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	id := uint32(id64)
 	student := repository.Student{Id: id}
 
 	err = repository.GetStudent(&student)
@@ -157,15 +179,12 @@ func getDeleteStudentConfirm(w http.ResponseWriter, r *http.Request) {
 }
 
 func deleteStudent(w http.ResponseWriter, r *http.Request) {
-	idRaw := strings.TrimSuffix(r.URL.Path[9:], "/")
-
-	id64, err := strconv.ParseUint(idRaw, 10, 32)
+	id, err := extractIdFromPath(r.URL.Path, "/student/")
 
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	id := uint32(id64)
 	student := repository.Student{Id: id}
 
 	err = repository.DeleteStudent(&student)

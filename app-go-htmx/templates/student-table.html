@@ -5,7 +5,7 @@
             <th style="width: 10rem;">Last name</th>
             <th style="width: 10rem;">Email address</th>
             <th style="width: 10rem;">Phone number</th>
-            <th style="width: 3rem;"></th>
+            <th style="width: 10rem;"></th>
         </tr>
     </thead>
     <tbody>
@@ -20,8 +20,9 @@
             <td><input form="student-form-add" name="phone" style="width: 100%;" form="student-table-form"
                     hx-trigger="" /></td>
             <td>
-                <form hx-post="/student" id="student-form-add" hx-target="closest tr" hx-swap="afterend">
-                    <button type="submit">Save</button>
+                <form hx-post="/student" id="student-form-add" hx-target="closest tr" hx-swap="afterend"
+                    _="on htmx:afterRequest reset() me">
+                    <button type="submit">Add a student</button>
                 </form>
             </td>
         </tr>
@@ -33,8 +34,7 @@
             <td>{{ .Email }}</td>
             <td>{{ .Phone }}</td>
             <td>
-                <button hx-get="/student/inline-form" hx-vals='{"id": "{{ .Id }}"}' hx-target="closest tr"
-                    hx-swap="outerHTML">
+                <button hx-get="/student/inline-form/{{ .Id }}" hx-target="closest tr" hx-swap="outerHTML">
                     Edit
                 </button>
                 <button hx-get="/student/confirm/{{ .Id }}" hx-target="#dialog" hx-swap="beforeend">Delete</button>
@@ -55,25 +55,27 @@
             <td><input form="student-form-{{ .Id }}" name="phone" style="width: 100%;" form="student-table-form"
                     hx-trigger="" value="{{ .Phone }}" /></td>
             <td>
-                <form hx-put="/student" id="student-form-{{ .Id }}" hx-target="closest tr" hx-swap="outerHTML">
-                    <input type="hidden" name="id" value="{{.Id}}" />
+                <form hx-put="/student/{{ .Id }}" id="student-form-{{ .Id }}" hx-target="closest tr"
+                    hx-swap="outerHTML">
                     <button type="submit">Save</button>
+                    <button hx-get="/student/{{ .Id }}" hx-target="closest tr" hx-swap="outerHTML"
+                        type="button">Cancel</button>
                 </form>
             </td>
         </tr>
         {{ end }}
 
         {{ define "inline-new-student"}}
-        <tr>
+        <tr id="inline-student-{{ .Id }}">
             <td style="background-color: lightGreen">{{ .Firstname }}</td>
             <td style="background-color: lightGreen">{{ .Lastname }}</td>
             <td style="background-color: lightGreen">{{ .Email }}</td>
             <td style="background-color: lightGreen">{{ .Phone }}</td>
             <td style="background-color: lightGreen">
-                <button hx-get="/student/inline-form" hx-vals='{"id": "{{ .Id }}"}' hx-target="closest tr"
-                    hx-swap="outerHTML">
+                <button hx-get="/student/inline-form/{{ .Id }}" hx-target="closest tr" hx-swap="outerHTML">
                     Edit
                 </button>
+                <button hx-get="/student/confirm/{{ .Id }}" hx-target="#dialog" hx-swap="beforeend">Delete</button>
             </td>
         </tr>
         {{ end }}
