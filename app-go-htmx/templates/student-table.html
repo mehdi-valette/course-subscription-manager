@@ -9,16 +9,26 @@
         </tr>
     </thead>
     <tbody>
+        <!-- SEARCH -->
         <tr>
-            <td><input form="student-form-add" name="firstname" style="width: 100%;" autofocus form="student-table-form"
-                    hx-trigger="" />
+            <td colspan="4"><input form="student-form-search" name="search" style="width: 100%;" autofocus hx-trigger=""
+                    placeholder="Search" />
             </td>
-            <td><input form="student-form-add" name="lastname" style="width: 100%;" form="student-table-form"
-                    hx-trigger="" /></td>
-            <td><input form="student-form-add" name="email" style="width: 100%;" form="student-table-form"
-                    hx-trigger="" /></td>
-            <td><input form="student-form-add" name="phone" style="width: 100%;" form="student-table-form"
-                    hx-trigger="" /></td>
+            <td>
+                <form id="student-form-search" hx-get="/student" hx-target="closest table" hx-swap="outerHTML"
+                    _="on htmx:afterRequest reset() me">
+                    <button type="submit">Search a student</button>
+                </form>
+            </td>
+        </tr>
+        <!-- ADD -->
+        <tr>
+            <td><input form="student-form-add" name="firstname" style="width: 100%;" hx-trigger="" placeholder="Add" />
+            </td>
+            <td><input form="student-form-add" name="lastname" style="width: 100%;" hx-trigger="" placeholder="Add" />
+            </td>
+            <td><input form="student-form-add" name="email" style="width: 100%;" hx-trigger="" placeholder="Add" /></td>
+            <td><input form="student-form-add" name="phone" style="width: 100%;" hx-trigger="" placeholder="Add" /></td>
             <td>
                 <form hx-post="/student" id="student-form-add" hx-target="closest tr" hx-swap="afterend"
                     _="on htmx:afterRequest reset() me">
@@ -26,6 +36,8 @@
                 </form>
             </td>
         </tr>
+
+        <!-- LIST -->
         {{ range $student := . }}
         {{ block "inline-student" .}}
         <tr id="inline-student-{{ .Id }}">
@@ -57,9 +69,9 @@
             <td>
                 <form hx-put="/student/{{ .Id }}" id="student-form-{{ .Id }}" hx-target="closest tr"
                     hx-swap="outerHTML">
-                    <button type="submit">Save</button>
                     <button hx-get="/student/{{ .Id }}" hx-target="closest tr" hx-swap="outerHTML"
                         type="button">Cancel</button>
+                    <button type="submit">Save</button>
                 </form>
             </td>
         </tr>

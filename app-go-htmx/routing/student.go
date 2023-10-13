@@ -10,6 +10,7 @@ import (
 )
 
 func student(w http.ResponseWriter, r *http.Request) {
+
 	if strings.HasPrefix(r.URL.Path, "/student/inline-form") {
 		getStudentInlineForm(w, r)
 		return
@@ -48,8 +49,15 @@ func getStudentList(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 	}
 
+	search := r.URL.Query().Get("search")
+
 	var studentList []repository.Student
-	err = repository.GetStudentList(&studentList)
+
+	if search != "" {
+		err = repository.GetStudentFiltered(&studentList, search)
+	} else {
+		err = repository.GetStudentList(&studentList)
+	}
 
 	if err != nil {
 		fmt.Println(err)
