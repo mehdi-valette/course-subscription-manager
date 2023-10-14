@@ -10,8 +10,30 @@
         }
 
         button {
+            color: black;
+            background-color: lightGray;
             padding: .3rem;
             cursor: pointer;
+            border-radius: .5rem;
+            border: 2px lightBlue outset;
+            transition: .3s background-color ease-in;
+        }
+
+        button:hover {
+            background-color: white
+        }
+
+        button:active {
+            border-style: inset;
+        }
+
+        button.primary {
+            background-color: darkBlue;
+            color: white;
+        }
+
+        button.primary:hover {
+            background-color: blue;
         }
 
         input {
@@ -70,8 +92,6 @@
     <div class="page-container">
         <div id="page"></div>
     </div>
-
-    <div id="dialog"></template>
 </body>
 
 <script src="https://unpkg.com/htmx.org@1.9.6"
