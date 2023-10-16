@@ -70,7 +70,15 @@ func getStudentSingle(w http.ResponseWriter, r *http.Request) {
 	id, err := extractIdFromPath(r.URL.Path, "/student/")
 
 	if err != nil {
-		fmt.Println(err)
+		tmp, errIntern := loadTemplate("index.html", w)
+		if errIntern != nil {
+			return
+		}
+
+		w.Header().Set("HX-Retarget", "#toast")
+		w.Header().Set("HX-Reswap", "afterbegin")
+		tmp.ExecuteTemplate(w, "error", ErrorTemplate{err.Error()})
+		return
 	}
 
 	tmp, err := template.ParseFiles("../templates/student-table.html")

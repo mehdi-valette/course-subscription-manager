@@ -51,7 +51,7 @@
                 <button hx-get="/student/inline-form/{{ .Id }}" hx-target="closest tr" hx-swap="outerHTML">
                     Edit
                 </button>
-                <button hx-get="/student/confirm/{{ .Id }}" hx-target="body" hx-swap="beforeend">Delete</button>
+                <button hx-get="/student/confirm/{{ .Id }}" hx-target="#dialog" hx-swap="beforeend">Delete</button>
             </td>
         </tr>
         {{ end }}
@@ -89,7 +89,7 @@
                 <button hx-get="/student/inline-form/{{ .Id }}" hx-target="closest tr" hx-swap="outerHTML">
                     Edit
                 </button>
-                <button hx-get="/student/confirm/{{ .Id }}" hx-target="body" hx-swap="beforeend">Delete</button>
+                <button hx-get="/student/confirm/{{ .Id }}" hx-target="#dialog" hx-swap="beforeend">Delete</button>
             </td>
         </tr>
         {{ end }}
