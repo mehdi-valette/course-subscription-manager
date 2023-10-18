@@ -67,31 +67,23 @@ func getStudentList(w http.ResponseWriter, r *http.Request) {
 }
 
 func getStudentSingle(w http.ResponseWriter, r *http.Request) {
-	id, err := extractIdFromPath(r.URL.Path, "/student/")
+	id, err := extractIdFromPath(r.URL.Path, "/studentss/")
 
-	if err != nil {
-		tmp, errIntern := loadTemplate("index.html", w)
-		if errIntern != nil {
-			return
-		}
-
-		w.Header().Set("HX-Retarget", "#toast")
-		w.Header().Set("HX-Reswap", "afterbegin")
-		tmp.ExecuteTemplate(w, "error", ErrorTemplate{err.Error()})
+	if handleError(w, err) {
 		return
 	}
 
 	tmp, err := template.ParseFiles("../templates/student-table.html")
 
-	if err != nil {
-		fmt.Println(err)
+	if handleError(w, err) {
+		return
 	}
 
 	student := repository.Student{Id: id}
 	err = repository.GetStudent(&student)
 
-	if err != nil {
-		fmt.Println(err)
+	if handleError(w, err) {
+		return
 	}
 
 	tmp.ExecuteTemplate(w, "inline-student", student)

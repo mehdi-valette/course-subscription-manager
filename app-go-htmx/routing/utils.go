@@ -39,3 +39,22 @@ func loadTemplate(path string, w http.ResponseWriter) (*template.Template, error
 
 	return tmp, nil
 }
+
+func handleError(w http.ResponseWriter, err error) bool {
+	if err != nil {
+		tmp, errIntern := loadTemplate("index.html", w)
+		if errIntern != nil {
+			w.Header().Set("HX-Retarget", "#toast")
+			w.Header().Set("HX-Reswap", "afterbegin")
+			io.WriteString(w, "<div class=\"toast\">"+err.Error()+"</div>")
+			return true
+		}
+
+		w.Header().Set("HX-Retarget", "#toast")
+		w.Header().Set("HX-Reswap", "afterbegin")
+		tmp.ExecuteTemplate(w, "error", ErrorTemplate{err.Error()})
+		return true
+	}
+
+	return false
+}
