@@ -19,7 +19,7 @@
             <td>
                 <form id="student-form-search" hx-get="/student" hx-target="#page" hx-swap="innerHTML"
                     _="on htmx:afterRequest reset() me">
-                    <button type="submit">Search a student</button>
+                    <button class="btn" type="submit">Search a student</button>
                 </form>
             </td>
         </tr>
@@ -34,7 +34,7 @@
             <td>
                 <form hx-post="/student" id="student-form-add" hx-target="closest tr" hx-swap="afterend"
                     _="on htmx:afterRequest reset() me">
-                    <button type="submit">Add a student</button>
+                    <button class="btn" type="submit">Add a student</button>
                 </form>
             </td>
         </tr>
@@ -48,10 +48,11 @@
             <td>{{ .Email }}</td>
             <td>{{ .Phone }}</td>
             <td>
-                <button hx-get="/student/inline-form/{{ .Id }}" hx-target="closest tr" hx-swap="outerHTML">
+                <button class="btn" hx-get="/student/inline-form/{{ .Id }}" hx-target="closest tr" hx-swap="outerHTML">
                     Edit
                 </button>
-                <button hx-get="/student/confirm/{{ .Id }}" hx-target="#dialog" hx-swap="beforeend">Delete</button>
+                <button class="btn" hx-get="/student/confirm/{{ .Id }}" hx-target="#dialog"
+                    hx-swap="beforeend">Delete</button>
             </td>
         </tr>
         {{ end }}
@@ -71,9 +72,9 @@
             <td>
                 <form hx-put="/student/{{ .Id }}" id="student-form-{{ .Id }}" hx-target="closest tr"
                     hx-swap="outerHTML">
-                    <button hx-get="/student/{{ .Id }}" hx-target="closest tr" hx-swap="outerHTML"
+                    <button class="btn" hx-get="/student/{{ .Id }}" hx-target="closest tr" hx-swap="outerHTML"
                         type="button">Cancel</button>
-                    <button class="primary" type="submit">Save</button>
+                    <button class="btn btn-primary" type="submit">Save</button>
                 </form>
             </td>
         </tr>
@@ -86,26 +87,29 @@
             <td style="background-color: lightGreen">{{ .Email }}</td>
             <td style="background-color: lightGreen">{{ .Phone }}</td>
             <td style="background-color: lightGreen">
-                <button hx-get="/student/inline-form/{{ .Id }}" hx-target="closest tr" hx-swap="outerHTML">
+                <button class="btn" hx-get="/student/inline-form/{{ .Id }}" hx-target="closest tr" hx-swap="outerHTML">
                     Edit
                 </button>
-                <button hx-get="/student/confirm/{{ .Id }}" hx-target="#dialog" hx-swap="beforeend">Delete</button>
+                <button class="btn" hx-get="/student/confirm/{{ .Id }}" hx-target="#dialog"
+                    hx-swap="beforeend">Delete</button>
             </td>
         </tr>
         {{ end }}
     </tbody>
 
     {{ define "student-delete-confirm" }}
-    <div class="backdrop"
+    <div class="backdrop" _="on keydown[key is 'Escape'] or click[target is me] remove the closest .backdrop"
         style="display: flex; align-items: center; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0,0,0,0.2);">
+        <button
+            style="position: absolute; visibility: hidden; top: 0; left: 0; width: 100vw; height: 100vh; background-color: yellow;"></button>
         <dialog
             style="background-color: lightskyblue; border-radius: .5rem; border: 1px solid black; box-shadow: .3rem .3rem 1rem 1rem rgba(0, 0, 150, 0.2)"
             open>
             <p>Are you sure you want to delete <strong>{{ .Firstname }} {{ .Lastname }}</strong>?</p>
 
             <div style="display: flex; justify-content: end; gap: 1rem;">
-                <button autofocus type="button" _="on click remove the closest .backdrop">Cancel</button>
-                <button class="primary" hx-delete="/student/{{ .Id }}" _="on click remove the closest .backdrop"
+                <button class="btn" autofocus type="button" _="on click remove the closest .backdrop">Cancel</button>
+                <button class="btn btn-primary" hx-delete="/student/{{ .Id }}" _="on click remove the closest .backdrop"
                     hx-target="#inline-student-{{ .Id }}" hx-swap="outerHTML">Delete {{
                     .Firstname }}</button>
             </div>
