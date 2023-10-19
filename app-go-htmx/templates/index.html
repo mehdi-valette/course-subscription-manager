@@ -52,6 +52,11 @@
             list-style: none;
         }
 
+        h1 {
+            padding: 0;
+            margin-top: 0;
+        }
+
         table {
             text-align: left;
             border-collapse: collapse;
@@ -131,6 +136,7 @@
 <body>
     <ul class="menu">
         <li><button class="btn" hx-get="/student" hx-target="#page">Students</button></li>
+        <li><button class="btn" hx-get="/session" hx-target="#page">Sessions</button></li>
         <li>Sessions</li>
     </ul>
     <div class="page-container">
@@ -140,7 +146,6 @@
     <div id="dialog"></div>
 
     <div id="toast">
-
         {{ define "error" }}
         <div class="toast" _="
                 on animationend wait 5s add .fade then settle then remove me

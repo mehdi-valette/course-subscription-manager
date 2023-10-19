@@ -13,6 +13,17 @@ type ErrorTemplate struct {
 	Message string
 }
 
+/*
+get the ID at the end of a path
+
+@param path: the whole path requested by the client
+
+@param commonPath: the part of the path before the ID
+
+@return id: the ID that was in the path
+
+@return error: the error that occurred, or nil when no error occurred
+*/
 func extractIdFromPath(path string, commonPath string) (uint32, error) {
 	if len(path) < len(commonPath) {
 		return 0, errors.New("the path is invalid")

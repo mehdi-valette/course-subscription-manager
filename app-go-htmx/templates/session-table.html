@@ -1,0 +1,34 @@
+<h1>Sessions</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Create a session -->
+        <tr>
+            <td><input form="session-add" name="name" /></td>
+            <td>
+                <form hx-post="/session" id="session-add">
+                    <button class="btn" type="submit">Add</button>
+                </form>
+            </td>
+        </tr>
+
+        <!-- List sessions -->
+        {{ range $session := . }}
+        {{ block "session-row" . }}
+        <tr>
+            <td>{{ .Name }}</td>
+            <td>
+                <button class="btn">Edit</button>
+                <button class="btn btn-primary">Delete</button>
+            </td>
+        </tr>
+        {{ end }}
+        {{ end }}
+    </tbody>
+</table>

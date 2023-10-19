@@ -20,6 +20,8 @@ func FrontController(w http.ResponseWriter, r *http.Request) {
 		getIndex(w, r)
 	} else if strings.HasPrefix(r.URL.Path, "/student") {
 		student(w, r)
+	} else if strings.HasPrefix(r.URL.Path, "/session") {
+		session(w, r)
 	}
 }
 
@@ -30,22 +32,7 @@ func getIndex(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 	}
 
-	err = tmp.Execute(w, User{
-		User: "John",
-		List: []struct {
-			Name string
-			Done bool
-		}{
-			{
-				Name: "Belle",
-				Done: true,
-			},
-			{
-				Name: "Bulle",
-				Done: false,
-			},
-		},
-	})
+	err = tmp.Execute(w, nil)
 
 	if err != nil {
 		fmt.Println(err)

@@ -9,7 +9,7 @@ import (
 
 func student(w http.ResponseWriter, r *http.Request) {
 
-	if strings.HasPrefix(r.URL.Path, "/student/inline-form") {
+	if strings.HasPrefix(r.URL.Path, "/student/student-row-edit") {
 		getStudentInlineForm(w, r)
 		return
 	}
@@ -69,7 +69,7 @@ func getStudentSingle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	student := repository.Student{Id: id}
+	student := repository.Student{ID: id}
 	err = repository.GetStudent(&student)
 
 	if handleError(w, err) {
@@ -77,14 +77,14 @@ func getStudentSingle(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if tmp, success := loadTemplate(w, "student-table.html"); success {
-		tmp.ExecuteTemplate(w, "inline-student", student)
+		tmp.ExecuteTemplate(w, "student-row", student)
 	}
 }
 
 func getStudentInlineForm(w http.ResponseWriter, r *http.Request) {
-	id, err := extractIdFromPath(r.URL.Path, "/student/inline-form/")
+	id, err := extractIdFromPath(r.URL.Path, "/student/student-row-edit/")
 
-	student := repository.Student{Id: id}
+	student := repository.Student{ID: id}
 
 	err = repository.GetStudent(&student)
 
@@ -93,7 +93,7 @@ func getStudentInlineForm(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if tmp, success := loadTemplate(w, "student-table.html"); success {
-		tmp.ExecuteTemplate(w, "inline-form", student)
+		tmp.ExecuteTemplate(w, "student-row-edit", student)
 	}
 }
 
@@ -105,7 +105,7 @@ func updateStudent(w http.ResponseWriter, r *http.Request) {
 	}
 
 	student := repository.Student{
-		Id:        id,
+		ID:        id,
 		Firstname: r.FormValue("firstname"),
 		Lastname:  r.FormValue("lastname"),
 		Email:     r.FormValue("email"),
@@ -119,7 +119,7 @@ func updateStudent(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if tmp, success := loadTemplate(w, "student-table.html"); success {
-		tmp.ExecuteTemplate(w, "inline-student", student)
+		tmp.ExecuteTemplate(w, "student-row", student)
 	}
 }
 
@@ -139,7 +139,7 @@ func addStudent(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if tmp, success := loadTemplate(w, "student-table.html"); success {
-		tmp.ExecuteTemplate(w, "inline-new-student", student)
+		tmp.ExecuteTemplate(w, "student-row-new", student)
 	}
 }
 
@@ -150,7 +150,7 @@ func getDeleteStudentConfirm(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	student := repository.Student{Id: id}
+	student := repository.Student{ID: id}
 
 	err = repository.GetStudent(&student)
 
@@ -170,7 +170,7 @@ func deleteStudent(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	student := repository.Student{Id: id}
+	student := repository.Student{ID: id}
 
 	err = repository.DeleteStudent(&student)
 

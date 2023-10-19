@@ -5,14 +5,6 @@ import (
 	"gorm.io/gorm"
 )
 
-type Student struct {
-	Id        uint32 `gorm:"primaryKey"`
-	Firstname string
-	Lastname  string
-	Email     string
-	Phone     string
-}
-
 var db *gorm.DB
 
 func init() {
@@ -22,7 +14,7 @@ func init() {
 		panic("failed to connect database")
 	}
 
-	database.AutoMigrate(&Student{})
+	database.AutoMigrate(&Student{}, &Session{})
 
 	db = database
 }

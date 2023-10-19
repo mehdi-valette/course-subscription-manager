@@ -1,5 +1,13 @@
 package repository
 
+type Student struct {
+	ID        uint32 `gorm:"primaryKey"`
+	Firstname string
+	Lastname  string
+	Email     string
+	Phone     string
+}
+
 func AddStudent(student *Student) error {
 	result := db.Create(student)
 
@@ -19,7 +27,7 @@ func GetStudentFiltered(studentList *[]Student, filter string) error {
 }
 
 func GetStudent(student *Student) error {
-	result := db.First(student, student.Id)
+	result := db.First(student, student.ID)
 
 	return result.Error
 }
