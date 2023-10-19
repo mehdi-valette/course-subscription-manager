@@ -29,32 +29,52 @@ func extractIdFromPath(path string, commonPath string) (uint32, error) {
 	return uint32(id64), nil
 }
 
-func loadTemplate(path string, w http.ResponseWriter) (*template.Template, error) {
+/*
+load a template
+
+@param w: ResponseWriter to write the error to
+
+@param path: path of the template, starting from the directory "template"
+
+@return template: the parsed template
+
+@return success: true if the parsing was successful, false otherwise
+*/
+func loadTemplate(w http.ResponseWriter, path string) (*template.Template, bool) {
 	tmp, err := template.ParseFiles("../templates/" + path)
 
-	if err != nil {
-		io.WriteString(w, err.Error())
-		return nil, err
+	if handleError(w, err) {
+		return nil, false
 	}
 
-	return tmp, nil
+	return tmp, true
 }
 
-func handleError(w http.ResponseWriter, err error) bool {
-	if err != nil {
-		tmp, errIntern := loadTemplate("index.html", w)
-		if errIntern != nil {
-			w.Header().Set("HX-Retarget", "#toast")
-			w.Header().Set("HX-Reswap", "afterbegin")
-			io.WriteString(w, "<div class=\"toast\">"+err.Error()+"</div>")
-			return true
-		}
+/*
+write the error to the response when the error is not nil
 
+@param w: ResponseWriter in which the error must be written
+
+@param err: error to evaluate
+
+@return errorHandled: true if there was an error, false otherwise
+*/
+func handleError(w http.ResponseWriter, err error) bool {
+	if err == nil {
+		return false
+	}
+
+	if tmp, success := loadTemplate(w, "index.html"); success {
 		w.Header().Set("HX-Retarget", "#toast")
 		w.Header().Set("HX-Reswap", "afterbegin")
 		tmp.ExecuteTemplate(w, "error", ErrorTemplate{err.Error()})
+
 		return true
 	}
 
-	return false
+	w.Header().Set("HX-Retarget", "#toast")
+	w.Header().Set("HX-Reswap", "afterbegin")
+	io.WriteString(w, "<div class=\"toast\" style=\"background-color: red;\">"+err.Error()+"</div>")
+
+	return true
 }

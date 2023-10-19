@@ -75,6 +75,17 @@
             padding: 1rem;
         }
 
+        #toast {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            gap: .5rem;
+            padding-bottom: .5rem;
+            pointer-events: none;
+        }
+
         .toast {
             animation-duration: .3s;
             animation-fill-mode: forwards;
@@ -128,12 +139,11 @@
 
     <div id="dialog"></div>
 
-    <div id="toast"
-        style="position: absolute; left: 0; bottom: 0; display: flex; flex-direction: column; gap: .5rem; padding-bottom: .5rem; pointer-events: none;">
+    <div id="toast">
 
         {{ define "error" }}
         <div class="toast" _="
-                on load wait 5s add .fade then settle then remove me
+                on animationend wait 5s add .fade then settle then remove me
                 on click add .fade then settle then remove me
         ">
             {{ .Message }}

@@ -2,8 +2,6 @@ package routing
 
 import (
 	"app-htmx/repository"
-	"fmt"
-	"html/template"
 	"io"
 	"net/http"
 	"strings"
@@ -43,37 +41,29 @@ func getStudent(w http.ResponseWriter, r *http.Request) {
 }
 
 func getStudentList(w http.ResponseWriter, r *http.Request) {
-	tmp, err := template.ParseFiles("../templates/student-table.html")
-
-	if err != nil {
-		fmt.Println(err)
-	}
 
 	search := r.URL.Query().Get("search")
 
 	var studentList []repository.Student
 
+	var err error = nil
 	if search != "" {
 		err = repository.GetStudentFiltered(&studentList, search)
 	} else {
 		err = repository.GetStudentList(&studentList)
 	}
 
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	tmp.Execute(w, studentList)
-}
-
-func getStudentSingle(w http.ResponseWriter, r *http.Request) {
-	id, err := extractIdFromPath(r.URL.Path, "/studentss/")
-
 	if handleError(w, err) {
 		return
 	}
 
-	tmp, err := template.ParseFiles("../templates/student-table.html")
+	if tmp, success := loadTemplate(w, "student-table.html"); success {
+		tmp.Execute(w, studentList)
+	}
+}
+
+func getStudentSingle(w http.ResponseWriter, r *http.Request) {
+	id, err := extractIdFromPath(r.URL.Path, "/student/")
 
 	if handleError(w, err) {
 		return
@@ -86,7 +76,9 @@ func getStudentSingle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tmp.ExecuteTemplate(w, "inline-student", student)
+	if tmp, success := loadTemplate(w, "student-table.html"); success {
+		tmp.ExecuteTemplate(w, "inline-student", student)
+	}
 }
 
 func getStudentInlineForm(w http.ResponseWriter, r *http.Request) {
@@ -96,30 +88,20 @@ func getStudentInlineForm(w http.ResponseWriter, r *http.Request) {
 
 	err = repository.GetStudent(&student)
 
-	if err != nil {
-		fmt.Println(err)
+	if handleError(w, err) {
+		return
 	}
 
-	tmp, err := template.ParseFiles("../templates/student-table.html")
-
-	if err != nil {
-		fmt.Println(err)
+	if tmp, success := loadTemplate(w, "student-table.html"); success {
+		tmp.ExecuteTemplate(w, "inline-form", student)
 	}
-
-	tmp.ExecuteTemplate(w, "inline-form", student)
 }
 
 func updateStudent(w http.ResponseWriter, r *http.Request) {
 	id, err := extractIdFromPath(r.URL.Path, "/student/")
 
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	tmp, err := template.ParseFiles("../templates/student-table.html")
-
-	if err != nil {
-		fmt.Println(err)
+	if handleError(w, err) {
+		return
 	}
 
 	student := repository.Student{
@@ -132,19 +114,16 @@ func updateStudent(w http.ResponseWriter, r *http.Request) {
 
 	err = repository.UpdateStudent(&student)
 
-	if err != nil {
-		fmt.Println(err)
+	if handleError(w, err) {
+		return
 	}
 
-	tmp.ExecuteTemplate(w, "inline-student", student)
+	if tmp, success := loadTemplate(w, "student-table.html"); success {
+		tmp.ExecuteTemplate(w, "inline-student", student)
+	}
 }
 
 func addStudent(w http.ResponseWriter, r *http.Request) {
-	tmp, err := template.ParseFiles("../templates/student-table.html")
-
-	if err != nil {
-		fmt.Println(err)
-	}
 
 	student := repository.Student{
 		Firstname: r.FormValue("firstname"),
@@ -153,52 +132,50 @@ func addStudent(w http.ResponseWriter, r *http.Request) {
 		Phone:     r.FormValue("phone"),
 	}
 
-	err = repository.AddStudent(&student)
+	err := repository.AddStudent(&student)
 
-	if err != nil {
-		fmt.Println(err)
+	if handleError(w, err) {
+		return
 	}
 
-	tmp.ExecuteTemplate(w, "inline-new-student", student)
+	if tmp, success := loadTemplate(w, "student-table.html"); success {
+		tmp.ExecuteTemplate(w, "inline-new-student", student)
+	}
 }
 
 func getDeleteStudentConfirm(w http.ResponseWriter, r *http.Request) {
 	id, err := extractIdFromPath(r.URL.Path, "/student/confirm/")
 
-	if err != nil {
-		fmt.Println(err)
+	if handleError(w, err) {
+		return
 	}
 
 	student := repository.Student{Id: id}
 
 	err = repository.GetStudent(&student)
 
-	if err != nil {
-		fmt.Println(err)
+	if handleError(w, err) {
+		return
 	}
 
-	tmp, err := template.ParseFiles("../templates/student-table.html")
-
-	if err != nil {
-		fmt.Println(err)
+	if tmp, success := loadTemplate(w, "student-table.html"); success {
+		tmp.ExecuteTemplate(w, "student-delete-confirm", student)
 	}
-
-	tmp.ExecuteTemplate(w, "student-delete-confirm", student)
 }
 
 func deleteStudent(w http.ResponseWriter, r *http.Request) {
 	id, err := extractIdFromPath(r.URL.Path, "/student/")
 
-	if err != nil {
-		fmt.Println(err)
+	if handleError(w, err) {
+		return
 	}
 
 	student := repository.Student{Id: id}
 
 	err = repository.DeleteStudent(&student)
 
-	if err != nil {
-		fmt.Println(err)
+	if handleError(w, err) {
+		return
 	}
 
 	io.WriteString(w, "")
