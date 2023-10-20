@@ -4,13 +4,16 @@
     <thead>
         <tr>
             <th>Name</th>
-            <th></th>
+            <th>From</th>
+            <th>To</th>
         </tr>
     </thead>
     <tbody>
         <!-- Create a session -->
         <tr>
             <td><input form="session-add" name="name" /></td>
+            <td><input type="date" form="session-add" name="start" /></td>
+            <td><input type="date" form="session-add" name="end" /></td>
             <td>
                 <form hx-post="/session" id="session-add">
                     <button class="btn" type="submit">Add</button>
@@ -23,6 +26,8 @@
         {{ block "session-row" . }}
         <tr>
             <td>{{ .Name }}</td>
+            <td>{{ Date .Start }}</td>
+            <td>{{ Date .End }}</td>
             <td>
                 <button class="btn">Edit</button>
                 <button class="btn btn-primary">Delete</button>

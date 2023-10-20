@@ -2,6 +2,7 @@ package routing
 
 import (
 	"errors"
+	"fmt"
 	"html/template"
 	"io"
 	"net/http"
@@ -53,6 +54,18 @@ load a template
 */
 func loadTemplate(w http.ResponseWriter, path string) (*template.Template, bool) {
 	tmp, err := template.ParseFiles("../templates/" + path)
+
+	if handleError(w, err) {
+		return nil, false
+	}
+
+	return tmp, true
+}
+
+func loadTemplateWith(w http.ResponseWriter, path string, funcMap template.FuncMap) (*template.Template, bool) {
+	tmp, err := template.New(path).Funcs(funcMap).ParseFiles("../templates/" + path)
+	test := tmp.DefinedTemplates()
+	fmt.Println(test)
 
 	if handleError(w, err) {
 		return nil, false

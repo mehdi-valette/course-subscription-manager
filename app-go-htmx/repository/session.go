@@ -1,8 +1,12 @@
 package repository
 
+import "time"
+
 type Session struct {
-	ID   uint32 `gorm:"primaryKey"`
-	Name string
+	ID    uint32 `gorm:"primaryKey"`
+	Name  string
+	Start time.Time
+	End   time.Time
 }
 
 func AddSession(session *Session) error {
