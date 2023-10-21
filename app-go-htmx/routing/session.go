@@ -11,6 +11,17 @@ var templateDateFunction = template.FuncMap{
 	"Date": func(date time.Time) string { return date.Format("Jan 02, 2006") },
 }
 
+var sessionTableTemplate = template.Must(
+	template.
+		New("session-table.html").
+		Funcs(
+			template.FuncMap{"Date": func(date time.Time) string {
+				return date.Format("Jan 02, 2006")
+			},
+			},
+		).
+		ParseFiles("../templates/session-table.html"))
+
 func session(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
@@ -24,17 +35,20 @@ func getSession(w http.ResponseWriter, r *http.Request) {
 	var sessionList []repository.Session
 	repository.GetSessionList(&sessionList)
 
-	if tmp, success := loadTemplateWith(w, "session-table.html", templateDateFunction); success {
-		tmp.Execute(w, sessionList)
-	}
+	sessionTableTemplate.Execute(w, sessionList)
 }
 
 func addSession(w http.ResponseWriter, r *http.Request) {
 
-	start, startSuccess := stringToTime(w, r.FormValue("start"))
-	end, endSuccess := stringToTime(w, r.FormValue("end"))
+	start, success := stringToTime(w, r.FormValue("start"))
 
-	if !startSuccess || !endSuccess {
+	if !success {
+		return
+	}
+
+	end, success := stringToTime(w, r.FormValue("end"))
+
+	if !success {
 		return
 	}
 

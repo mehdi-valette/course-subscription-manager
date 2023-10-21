@@ -2,10 +2,19 @@ package routing
 
 import (
 	"app-htmx/repository"
+	"html/template"
 	"io"
 	"net/http"
 	"strings"
 )
+
+const baseTemplate = "../templates/student-table.html"
+
+var studentTableTemplate = template.Must(template.ParseFiles(baseTemplate))
+var studentRowTemplate = template.Must(template.New("student-row").ParseFiles(baseTemplate))
+var studentRowEditTemplate = template.Must(template.New("student-row-edit").ParseFiles(baseTemplate))
+var studentRowNewTemplate = template.Must(template.New("student-row-new").ParseFiles(baseTemplate))
+var studentDeleteConfirmTemplate = template.Must(template.New("student-delete-confirm").ParseFiles(baseTemplate))
 
 func student(w http.ResponseWriter, r *http.Request) {
 
@@ -57,9 +66,7 @@ func getStudentList(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if tmp, success := loadTemplate(w, "student-table.html"); success {
-		tmp.Execute(w, studentList)
-	}
+	studentTableTemplate.Execute(w, studentList)
 }
 
 func getStudentSingle(w http.ResponseWriter, r *http.Request) {
@@ -76,9 +83,7 @@ func getStudentSingle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if tmp, success := loadTemplate(w, "student-table.html"); success {
-		tmp.ExecuteTemplate(w, "student-row", student)
-	}
+	studentRowTemplate.Execute(w, student)
 }
 
 func getStudentInlineForm(w http.ResponseWriter, r *http.Request) {
@@ -92,9 +97,7 @@ func getStudentInlineForm(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if tmp, success := loadTemplate(w, "student-table.html"); success {
-		tmp.ExecuteTemplate(w, "student-row-edit", student)
-	}
+	studentRowEditTemplate.Execute(w, student)
 }
 
 func updateStudent(w http.ResponseWriter, r *http.Request) {
@@ -118,9 +121,7 @@ func updateStudent(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if tmp, success := loadTemplate(w, "student-table.html"); success {
-		tmp.ExecuteTemplate(w, "student-row", student)
-	}
+	studentRowTemplate.Execute(w, student)
 }
 
 func addStudent(w http.ResponseWriter, r *http.Request) {
@@ -138,9 +139,7 @@ func addStudent(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if tmp, success := loadTemplate(w, "student-table.html"); success {
-		tmp.ExecuteTemplate(w, "student-row-new", student)
-	}
+	studentRowNewTemplate.Execute(w, student)
 }
 
 func getDeleteStudentConfirm(w http.ResponseWriter, r *http.Request) {
@@ -158,9 +157,7 @@ func getDeleteStudentConfirm(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if tmp, success := loadTemplate(w, "student-table.html"); success {
-		tmp.ExecuteTemplate(w, "student-delete-confirm", student)
-	}
+	studentDeleteConfirmTemplate.Execute(w, student)
 }
 
 func deleteStudent(w http.ResponseWriter, r *http.Request) {

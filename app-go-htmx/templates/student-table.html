@@ -43,17 +43,17 @@
         <!-- LIST -->
         {{ range $student := . }}
         {{ block "student-row" .}}
-        <tr id="student-row-{{ .Id }}">
+        <tr id="student-row-{{ .ID }}">
             <td>{{ .Firstname }}</td>
             <td>{{ .Lastname }}</td>
             <td>{{ .Email }}</td>
             <td>{{ .Phone }}</td>
             <td>
-                <button class="btn" hx-get="/student/student-row-edit/{{ .Id }}" hx-target="closest tr"
+                <button class="btn" hx-get="/student/student-row-edit/{{ .ID }}" hx-target="closest tr"
                     hx-swap="outerHTML">
                     Edit
                 </button>
-                <button class="btn" hx-get="/student/confirm/{{ .Id }}" hx-target="#dialog"
+                <button class="btn" hx-get="/student/confirm/{{ .ID }}" hx-target="#dialog"
                     hx-swap="beforeend">Delete</button>
             </td>
         </tr>
@@ -63,19 +63,19 @@
         <!-- edit form -->
         {{ define "student-row-edit" }}
         <tr>
-            <td><input form="student-form-{{ .Id }}" name="firstname" style="width: 100%;" autofocus
+            <td><input form="student-form-{{ .ID }}" name="firstname" style="width: 100%;" autofocus
                     form="student-table-form" hx-trigger="" value="{{ .Firstname }}" />
             </td>
-            <td><input form="student-form-{{ .Id }}" name="lastname" style="width: 100%;" form="student-table-form"
+            <td><input form="student-form-{{ .ID }}" name="lastname" style="width: 100%;" form="student-table-form"
                     hx-trigger="" value="{{ .Lastname }}" /></td>
-            <td><input form="student-form-{{ .Id }}" name="email" style="width: 100%;" form="student-table-form"
+            <td><input form="student-form-{{ .ID }}" name="email" style="width: 100%;" form="student-table-form"
                     hx-trigger="" value="{{ .Email }}" /></td>
-            <td><input form="student-form-{{ .Id }}" name="phone" style="width: 100%;" form="student-table-form"
+            <td><input form="student-form-{{ .ID }}" name="phone" style="width: 100%;" form="student-table-form"
                     hx-trigger="" value="{{ .Phone }}" /></td>
             <td>
-                <form hx-put="/student/{{ .Id }}" id="student-form-{{ .Id }}" hx-target="closest tr"
+                <form hx-put="/student/{{ .ID }}" id="student-form-{{ .ID }}" hx-target="closest tr"
                     hx-swap="outerHTML">
-                    <button class="btn" hx-get="/student/{{ .Id }}" hx-target="closest tr" hx-swap="outerHTML"
+                    <button class="btn" hx-get="/student/{{ .ID }}" hx-target="closest tr" hx-swap="outerHTML"
                         type="button">Cancel</button>
                     <button class="btn btn-primary" type="submit">Save</button>
                 </form>
@@ -84,17 +84,17 @@
         {{ end }}
 
         {{ define "student-row-new"}}
-        <tr id="student-row-{{ .Id }}">
+        <tr id="student-row-{{ .ID }}">
             <td style="background-color: lightGreen">{{ .Firstname }}</td>
             <td style="background-color: lightGreen">{{ .Lastname }}</td>
             <td style="background-color: lightGreen">{{ .Email }}</td>
             <td style="background-color: lightGreen">{{ .Phone }}</td>
             <td style="background-color: lightGreen">
-                <button class="btn" hx-get="/student/student-row-edit/{{ .Id }}" hx-target="closest tr"
+                <button class="btn" hx-get="/student/student-row-edit/{{ .ID }}" hx-target="closest tr"
                     hx-swap="outerHTML">
                     Edit
                 </button>
-                <button class="btn" hx-get="/student/confirm/{{ .Id }}" hx-target="#dialog"
+                <button class="btn" hx-get="/student/confirm/{{ .ID }}" hx-target="#dialog"
                     hx-swap="beforeend">Delete</button>
             </td>
         </tr>
@@ -104,8 +104,6 @@
     {{ define "student-delete-confirm" }}
     <div class="backdrop" _="on keydown[key is 'Escape'] or click[target is me] remove the closest .backdrop"
         style="display: flex; align-items: center; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0,0,0,0.2);">
-        <button
-            style="position: absolute; visibility: hidden; top: 0; left: 0; width: 100vw; height: 100vh; background-color: yellow;"></button>
         <dialog
             style="background-color: lightskyblue; border-radius: .5rem; border: 1px solid black; box-shadow: .3rem .3rem 1rem 1rem rgba(0, 0, 150, 0.2)"
             open>
@@ -113,8 +111,8 @@
 
             <div style="display: flex; justify-content: end; gap: 1rem;">
                 <button class="btn" autofocus type="button" _="on click remove the closest .backdrop">Cancel</button>
-                <button class="btn btn-primary" hx-delete="/student/{{ .Id }}" _="on click remove the closest .backdrop"
-                    hx-target="#student-row-{{ .Id }}" hx-swap="outerHTML">Delete {{
+                <button class="btn btn-primary" hx-delete="/student/{{ .ID }}" _="on click remove the closest .backdrop"
+                    hx-target="#student-row-{{ .ID }}" hx-swap="outerHTML">Delete {{
                     .Firstname }}</button>
             </div>
         </dialog>
