@@ -16,7 +16,7 @@ func AddSession(session *Session) error {
 }
 
 func GetSessionList(sessionList *[]Session, filter Session) error {
-	sessionResult := db.Order("start").Order("name").Find(sessionList)
+	sessionResult := db.Order("start DESC").Order("name").Find(sessionList)
 
 	if filter.Name != "" {
 		sessionResult = sessionResult.Where("name LIKE ?", "%"+filter.Name+"%")
