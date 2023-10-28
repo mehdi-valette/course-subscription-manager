@@ -121,7 +121,7 @@ func updateStudent(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	studentRowTemplate.Execute(w, student)
+	studentRowNewTemplate.Execute(w, student)
 }
 
 func addStudent(w http.ResponseWriter, r *http.Request) {
