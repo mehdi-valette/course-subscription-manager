@@ -20,3 +20,14 @@ func GetSessionList(session *[]Session) error {
 
 	return result.Error
 }
+
+func GetSession(session *Session) error {
+	result := db.First(session, session.ID)
+
+	return result.Error
+}
+
+func DeleteSession(session *Session) error {
+	result := db.Delete(session)
+	return result.Error
+}

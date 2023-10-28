@@ -100,22 +100,22 @@
         </tr>
         {{ end }}
     </tbody>
-
-    {{ define "student-delete-confirm" }}
-    <div class="backdrop" _="on keydown[key is 'Escape'] or click[target is me] remove the closest .backdrop"
-        style="display: flex; align-items: center; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0,0,0,0.2);">
-        <dialog
-            style="background-color: lightskyblue; border-radius: .5rem; border: 1px solid black; box-shadow: .3rem .3rem 1rem 1rem rgba(0, 0, 150, 0.2)"
-            open>
-            <p>Are you sure you want to delete <strong>{{ .Firstname }} {{ .Lastname }}</strong>?</p>
-
-            <div style="display: flex; justify-content: end; gap: 1rem;">
-                <button class="btn" autofocus type="button" _="on click remove the closest .backdrop">Cancel</button>
-                <button class="btn btn-primary" hx-delete="/student/{{ .ID }}" _="on click remove the closest .backdrop"
-                    hx-target="#student-row-{{ .ID }}" hx-swap="outerHTML">Delete {{
-                    .Firstname }}</button>
-            </div>
-        </dialog>
-    </div>
-    {{ end }}
 </table>
+
+{{ define "student-delete-confirm" }}
+<div class="backdrop" _="on keydown[key is 'Escape'] or click[target is me] remove me"
+    style="display: flex; align-items: center; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0,0,0,0.2);">
+    <dialog
+        style="background-color: lightskyblue; border-radius: .5rem; border: 1px solid black; box-shadow: .3rem .3rem 1rem 1rem rgba(0, 0, 150, 0.2)"
+        open>
+        <p>Are you sure you want to delete <strong>{{ .Firstname }} {{ .Lastname }}</strong>?</p>
+
+        <div style="display: flex; justify-content: end; gap: 1rem;">
+            <button class="btn" autofocus type="button" _="on click remove the closest .backdrop">Cancel</button>
+            <button class="btn btn-primary" hx-delete="/student/{{ .ID }}" _="on click remove the closest .backdrop"
+                hx-target="#student-row-{{ .ID }}" hx-swap="outerHTML">Delete {{
+                .Firstname }}</button>
+        </div>
+    </dialog>
+</div>
+{{ end }}

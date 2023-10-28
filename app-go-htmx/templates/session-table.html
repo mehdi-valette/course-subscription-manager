@@ -15,25 +15,60 @@
             <td><input type="date" form="session-add" name="start" /></td>
             <td><input type="date" form="session-add" name="end" /></td>
             <td>
-                <form hx-post="/session" id="session-add">
+                <form id="session-add" hx-post="/session" hx-target="closest tr" hx-swap="afterend"
+                    _="on htmx:afterRequest reset() me">
                     <button class="btn" type="submit">Add</button>
                 </form>
             </td>
         </tr>
 
+        {{ define "session-row-new"}}
+        <tr id="session-row-{{ .ID }}">
+            <td style="background-color: lightGreen">{{ .Name }}</td>
+            <td style="background-color: lightGreen">{{ Date .Start }}</td>
+            <td style="background-color: lightGreen">{{ Date .End }}</td>
+            <td style="background-color: lightGreen">
+                <button class="btn" hx-get="/session/session-row-edit/{{ .ID }}" hx-target="closest tr"
+                    hx-swap="outerHTML">
+                    Edit
+                </button>
+                <button class="btn" hx-get="/session/confirm/{{ .ID }}" hx-target="#dialog"
+                    hx-swap="beforeend">Delete</button>
+            </td>
+        </tr>
+        {{ end }}
+
         <!-- List sessions -->
         {{ range $session := . }}
         {{ block "session-row" . }}
-        <tr>
+        <tr id="session-row-{{ .ID }}">
             <td>{{ .Name }}</td>
             <td>{{ Date .Start }}</td>
             <td>{{ Date .End }}</td>
             <td>
                 <button class="btn">Edit</button>
-                <button class="btn btn-primary">Delete</button>
+                <button class="btn btn-primary" hx-get="/session/confirm/{{ .ID }}" hx-target="#dialog"
+                    hx-swap="beforeend">Delete</button>
             </td>
         </tr>
         {{ end }}
         {{ end }}
     </tbody>
 </table>
+
+{{ define "session-delete-confirm" }}
+<div class="backdrop" _="on keydown[key is 'Escape'] or click[target is me] remove me"
+    style="display: flex; align-items: center; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0,0,0,0.2);">
+    <dialog
+        style="background-color: lightskyblue; border-radius: .5rem; border: 1px solid black; box-shadow: .3rem .3rem 1rem 1rem rgba(0, 0, 150, 0.2)"
+        open>
+        <p>Are you sure you want to delete <strong>{{ .Name }}</strong>?</p>
+
+        <div style="display: flex; justify-content: end; gap: 1rem;">
+            <button class="btn" autofocus type="button" _="on click remove the closest .backdrop">Cancel</button>
+            <button class="btn btn-primary" hx-delete="/session/{{ .ID }}" _="on click remove the closest .backdrop"
+                hx-target="#session-row-{{ .ID }}" hx-swap="outerHTML">Delete {{.Name }}</button>
+        </div>
+    </dialog>
+</div>
+{{ end }}
