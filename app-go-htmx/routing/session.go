@@ -52,7 +52,26 @@ func session(w http.ResponseWriter, r *http.Request) {
 
 func getSession(w http.ResponseWriter, r *http.Request) {
 	var sessionList []repository.Session
-	repository.GetSessionList(&sessionList)
+
+	name := r.URL.Query().Get("name")
+	startStr := r.URL.Query().Get("start")
+	endStr := r.URL.Query().Get("end")
+
+	start, err := time.Parse("2006-01-02", startStr)
+
+	if err != nil {
+		start = time.Time{}
+	}
+
+	end, err := time.Parse("2006-01-02", endStr)
+
+	if err != nil {
+		end = time.Time{}
+	}
+
+	sessionFilter := repository.Session{Name: name, Start: start, End: end}
+
+	repository.GetSessionList(&sessionList, sessionFilter)
 
 	sessionTableTemplate.Execute(w, sessionList)
 }

@@ -15,8 +15,22 @@ func AddSession(session *Session) error {
 	return result.Error
 }
 
-func GetSessionList(session *[]Session) error {
-	result := db.Order("name").Find(session)
+func GetSessionList(sessionList *[]Session, filter Session) error {
+	sessionResult := db.Order("start").Find(sessionList)
+
+	if filter.Name != "" {
+		sessionResult = sessionResult.Where("name LIKE ?", "%"+filter.Name+"%")
+	}
+
+	if !filter.Start.IsZero() {
+		sessionResult = sessionResult.Where("end > ?", filter.Start)
+	}
+
+	if !filter.End.IsZero() {
+		sessionResult = sessionResult.Where("start < ?", filter.End)
+	}
+
+	result := sessionResult.Find(sessionList)
 
 	return result.Error
 }
