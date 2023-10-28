@@ -16,7 +16,7 @@ func AddSession(session *Session) error {
 }
 
 func GetSessionList(sessionList *[]Session, filter Session) error {
-	sessionResult := db.Order("start").Find(sessionList)
+	sessionResult := db.Order("start").Order("name").Find(sessionList)
 
 	if filter.Name != "" {
 		sessionResult = sessionResult.Where("name LIKE ?", "%"+filter.Name+"%")
@@ -43,5 +43,10 @@ func GetSession(session *Session) error {
 
 func DeleteSession(session *Session) error {
 	result := db.Delete(session)
+	return result.Error
+}
+
+func UpdateSession(session *Session) error {
+	result := db.Save(session)
 	return result.Error
 }

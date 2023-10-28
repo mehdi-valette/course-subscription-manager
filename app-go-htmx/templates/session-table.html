@@ -65,12 +65,36 @@
             <td>{{ Date .Start }}</td>
             <td>{{ Date .End }}</td>
             <td>
-                <button class="btn">Edit</button>
+                <button class="btn" hx-get="/session/session-row-edit/{{ .ID }}" hx-target="closest tr"
+                    hx-swap="outerHTML">Edit</button>
                 <button class="btn" hx-get="/session/confirm/{{ .ID }}" hx-target="#dialog"
                     hx-swap="beforeend">Delete</button>
             </td>
         </tr>
         {{ end }}
+        {{ end }}
+
+
+
+        <!-- edit form -->
+        {{ define "session-row-edit" }}
+        <tr id="session-row-{{ .ID }}">
+            <td><input form="session-form-{{ .ID }}" name="name" style="width: 100%;" autofocus hx-trigger=""
+                    value="{{ .Name }}" />
+            </td>
+            <td><input form="session-form-{{ .ID }}" type="date" name="start" style="width: 100%;" hx-trigger=""
+                    value="{{ String .Start }}" /></td>
+            <td><input form="session-form-{{ .ID }}" type="date" name="end" style="width: 100%;" hx-trigger=""
+                    value="{{ String .End }}" /></td>
+            <td>
+                <form hx-put="/session/{{ .ID }}" id="session-form-{{ .ID }}" hx-target="closest tr"
+                    hx-swap="outerHTML">
+                    <button class="btn" hx-get="/session/{{ .ID }}" hx-target="closest tr" hx-swap="outerHTML"
+                        type="button">Cancel</button>
+                    <button class="btn btn-primary" type="submit">Save</button>
+                </form>
+            </td>
+        </tr>
         {{ end }}
     </tbody>
 </table>

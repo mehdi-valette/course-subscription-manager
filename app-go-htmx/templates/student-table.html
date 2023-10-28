@@ -11,7 +11,7 @@
         </tr>
     </thead>
     <tbody>
-        <!-- SEARCH -->
+        <!-- search students -->
         <tr>
             <td colspan="4"><input form="student-row-search" name="search" style="width: 100%;" autofocus hx-trigger=""
                     placeholder="Search" />
@@ -24,7 +24,7 @@
             </td>
         </tr>
 
-        <!-- ADD -->
+        <!-- add a student -->
         <tr>
             <td><input form="student-form-add" name="firstname" style="width: 100%;" hx-trigger="" placeholder="Add" />
             </td>
@@ -40,7 +40,7 @@
             </td>
         </tr>
 
-        <!-- LIST -->
+        <!-- list students -->
         {{ range $student := . }}
         {{ block "student-row" .}}
         <tr id="student-row-{{ .ID }}">

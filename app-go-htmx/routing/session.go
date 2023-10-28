@@ -10,7 +10,8 @@ import (
 )
 
 var templateDateFunction = template.FuncMap{
-	"Date": func(date time.Time) string { return date.Format("Jan 02, 2006") },
+	"Date":   func(date time.Time) string { return date.Format("Jan 02, 2006") },
+	"String": func(date time.Time) string { return date.Format("2006-01-02") },
 }
 
 var sessionTableTemplate = template.Must(
@@ -34,9 +35,28 @@ var sessionRowNewTemplate = template.Must(
 		ParseFiles("../templates/session-table.html"),
 )
 
+var sessionRowTemplate = template.Must(
+	template.
+		New("session-row").
+		Funcs(templateDateFunction).
+		ParseFiles("../templates/session-table.html"),
+)
+
+var sessionRowEditTemplate = template.Must(
+	template.
+		New("session-row-edit").
+		Funcs(templateDateFunction).
+		ParseFiles("../templates/session-table.html"),
+)
+
 func session(w http.ResponseWriter, r *http.Request) {
 	if strings.HasPrefix(r.URL.Path, "/session/confirm/") {
 		confirmDeleteSession(w, r)
+		return
+	}
+
+	if strings.HasPrefix(r.URL.Path, "/session/session-row-edit/") {
+		updateSessionForm(w, r)
 		return
 	}
 
@@ -45,12 +65,23 @@ func session(w http.ResponseWriter, r *http.Request) {
 		getSession(w, r)
 	case "POST":
 		addSession(w, r)
+	case "PUT":
+		updateSession(w, r)
 	case "DELETE":
 		deleteSession(w, r)
 	}
 }
 
 func getSession(w http.ResponseWriter, r *http.Request) {
+	id, err := extractIdFromPath(r.URL.Path, "/session/")
+
+	if err == nil {
+		session := repository.Session{ID: id}
+		repository.GetSession(&session)
+		sessionRowTemplate.Execute(w, session)
+		return
+	}
+
 	var sessionList []repository.Session
 
 	name := r.URL.Query().Get("name")
@@ -135,6 +166,58 @@ func deleteSession(w http.ResponseWriter, r *http.Request) {
 	io.WriteString(w, "")
 }
 
+func updateSessionForm(w http.ResponseWriter, r *http.Request) {
+	id, err := extractIdFromPath(r.URL.Path, "/session/session-row-edit/")
+
+	if handleError(w, err) {
+		return
+	}
+
+	session := repository.Session{ID: id}
+
+	if handleError(w, repository.GetSession(&session)) {
+		return
+	}
+
+	sessionRowEditTemplate.Execute(w, session)
+}
+
+func updateSession(w http.ResponseWriter, r *http.Request) {
+	id, err := extractIdFromPath(r.URL.Path, "/session/")
+
+	if handleError(w, err) {
+		return
+	}
+
+	name := r.FormValue("name")
+	start, success := stringToTime(w, r.FormValue("start"))
+	if !success {
+		return
+	}
+
+	end, success := stringToTime(w, r.FormValue("end"))
+	if !success {
+		return
+	}
+
+	session := repository.Session{ID: id, Name: name, Start: start, End: end}
+
+	repository.UpdateSession(&session)
+
+	sessionRowNewTemplate.Execute(w, session)
+}
+
+/*
+convert a string into a time
+
+@param w: responseWriter to return the error
+
+@param dateStr: date in the string format 2006-01-02
+
+@return time: the converted time, or the zero time value
+
+@return success: wheter the conversion was a success
+*/
 func stringToTime(w http.ResponseWriter, dateStr string) (time.Time, bool) {
 	t, err := time.Parse("2006-01-02", dateStr)
 
