@@ -2,14 +2,22 @@ package main
 
 import (
 	"app-htmx/routing"
+	"log"
 	"net/http"
 	"os/exec"
 	"runtime"
 )
 
 func main() {
-	http.HandleFunc("/", routing.FrontController)
-	http.ListenAndServe(":5000", nil)
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", routing.FrontController)
+
+	err := http.ListenAndServe(":5000", mux)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	open("http://localhost:5000")
 }
 
